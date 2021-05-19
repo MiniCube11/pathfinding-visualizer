@@ -15,6 +15,7 @@ class Visualization:
         self.last_square = (-1, 0)
         self.start = (0, 0)
         self.target = (ROWS - 1, COLS - 1)
+        self.running = False
 
     def check_quit(self):
         for event in pygame.event.get():
@@ -47,6 +48,7 @@ class Visualization:
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_SPACE:
                         self.bfs()
+                        self.running = False
                     if event.key == pygame.K_r:
                         self.reset_path()
                 if event.type == pygame.QUIT:
@@ -60,7 +62,8 @@ class Visualization:
                 node = self.nodes[r][c]
                 node.state = 0
                 if node.x < self.mouse_pos[0] <= node.x + SQUARE_SIZE and node.y < self.mouse_pos[1] <= node.y + SQUARE_SIZE:
-                    node.state = 1
+                    if not self.running:
+                        node.state = 1
                     if self.mouse_clicked and self.last_square != (r, c):
                         node.wall = not node.wall
                         self.last_square = (r, c)
@@ -83,7 +86,8 @@ class Visualization:
             current_node_pos = current_node.last
 
     def bfs(self):
-        print('bfs')
+        self.running = True
+        print('Breadth First Search')
         q = deque()
         q.append(self.start)
         self.get_node(self.start).dist = 0
