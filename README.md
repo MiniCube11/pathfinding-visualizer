@@ -2,6 +2,9 @@
 
 A project that allows you to visualize pathfinding algorithms.
 
+&nbsp;
+![Demo](https://github.com/MiniCube11/pathfinding-visualizer/blob/2eb5ff8f80dff6b6ebde8d033c02d71fcd147ba3/screenshots/demo.gif)
+
 ## Algorithms
 * Breadth First Search - unweighted, guarantees the shortest path
 
