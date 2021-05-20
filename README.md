@@ -27,3 +27,5 @@ python main.py
 `Space` to start the visualization
 
 `R` to remove path
+
+`C` to clear graph
