@@ -16,6 +16,8 @@ class Visualization:
         self.start = (0, 0)
         self.target = (ROWS - 1, COLS - 1)
         self.running = False
+        self.s_pressed = False
+        self.t_pressed = False
 
     def check_quit(self):
         for event in pygame.event.get():
@@ -56,11 +58,16 @@ class Visualization:
                         self.bfs()
                         self.running = False
                     if event.key == pygame.K_c:
+                        self.reset_path()
                         self.reset_graph()
                     if event.key == pygame.K_r:
                         self.reset_path()
                 if event.type == pygame.QUIT:
                     return "QUIT"
+
+            keys = pygame.key.get_pressed()
+            self.s_pressed = keys[pygame.K_s]
+            self.t_pressed = keys[pygame.K_t]
 
             self.render()
 
@@ -75,8 +82,18 @@ class Visualization:
                     if not self.running:
                         node.state = 1
                     if self.mouse_clicked and self.last_square != (r, c) and self.target != (r, c):
-                        node.wall = not node.wall
-                        self.last_square = (r, c)
+                        if self.s_pressed:
+                            if self.target != (r, c):
+                                self.start = (r, c)
+                                node.wall = False
+                        elif self.t_pressed:
+                            if self.start != (r, c):
+                                self.target = (r, c)
+                                node.wall = False
+                        else:
+                            if self.start != (r, c) and self.target != (r, c):
+                                node.wall = not node.wall
+                                self.last_square = (r, c)
                 if node.wall:
                     node.state = 2
                 if node.dist != math.inf:
@@ -97,7 +114,7 @@ class Visualization:
 
     def bfs(self):
         self.running = True
-        print('Breadth First Search')
+        print('Starting Breadth First Search...')
         q = deque()
         q.append(self.start)
         self.get_node(self.start).dist = 0

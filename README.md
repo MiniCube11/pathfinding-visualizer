@@ -9,7 +9,7 @@ A project that allows you to visualize pathfinding algorithms.
 
 To run this project on your computer, follow these steps:
 
-1. Make sure you have python installed
+1. Make sure you have Python installed
 
 2. Install pygame
 ```
@@ -25,6 +25,10 @@ python main.py
 `Click` to add or remove walls
 
 `Space` to start the visualization
+
+`S + Click` to set the starting node
+
+`T + Click` to set the target node
 
 `R` to remove path
 
