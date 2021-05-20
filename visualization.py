@@ -39,6 +39,11 @@ class Visualization:
             for node in row:
                 node.reset()
 
+    def reset_graph(self):
+        for row in self.nodes:
+            for node in row:
+                node.wall = False
+
     def run(self):
         while True:
             self.mouse_pos = pygame.mouse.get_pos()
@@ -47,8 +52,11 @@ class Visualization:
             for event in pygame.event.get():
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_SPACE:
+                        self.reset_path()
                         self.bfs()
                         self.running = False
+                    if event.key == pygame.K_c:
+                        self.reset_graph()
                     if event.key == pygame.K_r:
                         self.reset_path()
                 if event.type == pygame.QUIT:
@@ -57,6 +65,8 @@ class Visualization:
             self.render()
 
     def render(self):
+        if not self.mouse_clicked:
+            self.last_square = (-1, 0)
         for r in range(ROWS):
             for c in range(COLS):
                 node = self.nodes[r][c]
@@ -64,7 +74,7 @@ class Visualization:
                 if node.x < self.mouse_pos[0] <= node.x + SQUARE_SIZE and node.y < self.mouse_pos[1] <= node.y + SQUARE_SIZE:
                     if not self.running:
                         node.state = 1
-                    if self.mouse_clicked and self.last_square != (r, c):
+                    if self.mouse_clicked and self.last_square != (r, c) and self.target != (r, c):
                         node.wall = not node.wall
                         self.last_square = (r, c)
                 if node.wall:

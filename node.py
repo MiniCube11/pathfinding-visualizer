@@ -15,7 +15,7 @@ class Node:
         self.reset()
 
     def reset(self):
-        self.last = -1
+        self.last = (-1, 0)
         self.dist = math.inf
         self.path = False
 
@@ -32,11 +32,15 @@ class Node:
 
     def get_neighbours(self, nodes):
         neigh = []
-        for rshift, cshift in [(1, 0), (-1, 0), (0, 1), (0, -1)]:
+        last_shift = (self.row - self.last[0], self.col - self.last[1])
+        for rshift, cshift in [(0, 1), (0, -1), (1, 0), (-1, 0)]:
             r = self.row + rshift
             c = self.col + cshift
             if 0 <= r < ROWS and 0 <= c < COLS:
                 ne_node = nodes[r][c]
                 if not ne_node.wall and self.dist + 1 < ne_node.dist:
-                    neigh.append((r, c))
+                    if (rshift, cshift) == last_shift:
+                        neigh.insert(0, (r, c))
+                    else:
+                        neigh.append((r, c))
         return neigh
