@@ -101,42 +101,44 @@ class Visualization:
                 node.render(self.start == (r, c), self.target == (r, c))
         pygame.display.update()
 
-    def find_path(self):
-        current_node_pos = self.target
+    def find_path(self, start_node, target_node):
+        current_node = target_node
         while True:
-            if current_node_pos == self.start:
+            if current_node == start_node:
                 return
-            current_node = self.get_node(current_node_pos)
             current_node.path = True
             self.render()
             self.wait_for(0.05)
-            current_node_pos = current_node.last
+            current_node = self.get_node(current_node.last)
 
     def bfs(self):
         self.running = True
         print('Starting Breadth First Search...')
-        q = deque()
-        q.append(self.start)
-        self.get_node(self.start).dist = 0
         last_dist = 1
 
+        start_node = self.get_node(self.start)
+        start_node.dist = 0
+        target_node = self.get_node(self.target)
+
+        q = deque()
+        q.append(start_node)
+
         while q:
-            node_pos = q.popleft()
-            node = self.get_node(node_pos)
+            node = q.popleft()
 
             if node.dist != last_dist:
                 self.render()
                 self.wait_for(0.1)
                 last_dist = node.dist
 
-            if node_pos == self.target:
-                self.find_path()
+            if node == target_node:
+                self.find_path(start_node, target_node)
                 return "finished"
 
             for neigh in node.get_neighbours(self.nodes):
                 neigh_node = self.get_node(neigh)
                 neigh_node.dist = node.dist + 1
-                neigh_node.last = node_pos
-                q.append(neigh)
+                neigh_node.last = (node.row, node.col)
+                q.append(neigh_node)
 
         print("NO PATH")
