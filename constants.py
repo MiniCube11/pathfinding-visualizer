@@ -11,3 +11,8 @@ SQUARE_BORDER_COLOR = (30, 30, 30)
 START_COLOR = (118, 127, 255)
 TARGET_COLOR = (77, 248, 153)
 PATH_COLOR = (200, 48, 250)
+
+ALGORITHMS = [
+    "Breadth First Search",
+    "A* Search",
+]

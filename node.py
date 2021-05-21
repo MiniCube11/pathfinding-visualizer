@@ -14,6 +14,11 @@ class Node:
         self.y = row * SQUARE_SIZE
         self.reset()
 
+    def __lt__(self, other):
+        if self.row == other.row:
+            return self.col < other.col
+        return self.row < other.row
+
     def reset(self):
         self.last = (-1, 0)
         self.dist = math.inf
@@ -44,3 +49,6 @@ class Node:
                     else:
                         neigh.append((r, c))
         return neigh
+
+    def heuristic(self, target):
+        return abs(target[0] - self.row) + abs(target[1] - self.col)

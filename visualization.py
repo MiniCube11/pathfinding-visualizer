@@ -4,6 +4,7 @@ import time
 import math
 from constants import *
 from collections import deque
+from queue import PriorityQueue
 from node import Node
 
 
@@ -18,6 +19,7 @@ class Visualization:
         self.running = False
         self.s_pressed = False
         self.t_pressed = False
+        self.algorithm = 0
 
     def check_quit(self):
         for event in pygame.event.get():
@@ -46,6 +48,30 @@ class Visualization:
             for node in row:
                 node.wall = False
 
+    def run_algorithm(self):
+        self.reset_path()
+        if self.algorithm == 0:
+            self.bfs()
+        elif self.algorithm == 1:
+            self.a_star()
+        self.running = False
+
+    def handle_key(self, key):
+        if key == pygame.K_SPACE:
+            self.run_algorithm()
+
+        elif key == pygame.K_c:
+            self.reset_path()
+            self.reset_graph()
+
+        elif key == pygame.K_r:
+            self.reset_path()
+
+        elif key == pygame.K_a:
+            self.algorithm += 1
+            self.algorithm %= len(ALGORITHMS)
+            print(f"Changed algorithm to {ALGORITHMS[self.algorithm]}")
+
     def run(self):
         while True:
             self.mouse_pos = pygame.mouse.get_pos()
@@ -53,15 +79,7 @@ class Visualization:
 
             for event in pygame.event.get():
                 if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_SPACE:
-                        self.reset_path()
-                        self.bfs()
-                        self.running = False
-                    if event.key == pygame.K_c:
-                        self.reset_path()
-                        self.reset_graph()
-                    if event.key == pygame.K_r:
-                        self.reset_path()
+                    self.handle_key(event.key)
                 if event.type == pygame.QUIT:
                     return "QUIT"
 
@@ -140,5 +158,38 @@ class Visualization:
                 neigh_node.dist = node.dist + 1
                 neigh_node.last = (node.row, node.col)
                 q.append(neigh_node)
+
+        print("NO PATH")
+
+    def a_star(self):
+        self.running = True
+        print("Starting A* Search...")
+
+        start_node = self.get_node(self.start)
+        start_node.dist = 0
+        target_node = self.get_node(self.target)
+
+        q = PriorityQueue()
+        q.put((0, 0, start_node))
+
+        while not q.empty():
+            priority, h, node = q.get()
+
+            if node == target_node:
+                self.find_path(start_node, target_node)
+                return "finished"
+
+            self.render()
+            self.wait_for(0.05)
+
+            for neigh in node.get_neighbours(self.nodes):
+                neigh = self.get_node(neigh)
+                new_dist = node.dist + 1
+                if new_dist < neigh.dist:
+                    neigh.dist = new_dist
+                    h = neigh.heuristic(self.target)
+                    priority = new_dist + h
+                    q.put((priority, h, neigh))
+                    neigh.last = (node.row, node.col)
 
         print("NO PATH")

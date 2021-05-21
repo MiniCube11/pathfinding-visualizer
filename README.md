@@ -8,6 +8,8 @@ A project that allows you to visualize pathfinding algorithms.
 ## Algorithms
 * Breadth First Search - unweighted, guarantees the shortest path
 
+* A Star Search - weighted (there are no weights in this project yet), uses heuristics to efficiently find the shortest path
+
 ## Getting Started
 
 To run this project on your computer, follow these steps:
@@ -36,3 +38,5 @@ python main.py
 `R` to remove path
 
 `C` to clear graph
+
+`A` to switch to next algorithm
