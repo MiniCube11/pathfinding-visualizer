@@ -170,26 +170,26 @@ class Visualization:
         target_node = self.get_node(self.target)
 
         q = PriorityQueue()
-        q.put((0, 0, start_node))
+        q.put((0, 0, 0, start_node))
 
         while not q.empty():
-            priority, h, node = q.get()
+            priority, _, _, node = q.get()
 
             if node == target_node:
                 self.find_path(start_node, target_node)
                 return "finished"
 
             self.render()
-            self.wait_for(0.05)
+            self.wait_for(0.02)
 
-            for neigh in node.get_neighbours(self.nodes):
+            for idx, neigh in enumerate(node.get_neighbours(self.nodes)):
                 neigh = self.get_node(neigh)
                 new_dist = node.dist + 1
                 if new_dist < neigh.dist:
                     neigh.dist = new_dist
                     h = neigh.heuristic(self.target)
                     priority = new_dist + h
-                    q.put((priority, h, neigh))
+                    q.put((priority, h, idx, neigh))
                     neigh.last = (node.row, node.col)
 
         print("NO PATH")
